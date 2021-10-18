@@ -23,3 +23,16 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add("login", (username = "lixiong", password = "aini123456") => {
+    cy.visit("/login");
+    cy.intercept("GET", "**/kaptchaCode*").as("kaptchaCode");
+    cy.get(".code-img").click();
+    cy.wait("@kaptchaCode").then((res) => {
+        let rep = JSON.parse(res.response.body);
+        cy.get('input[placeholder="验证码"]').clear().type(rep.data.kaptchaCode);
+    });
+    cy.get('input[placeholder="用户名"]').clear().type(username);
+    cy.get('input[placeholder="登录密码"]').clear().type(password);
+    // http://lhisdev.thalys.net.cn/api/user/os/login/login?c=100&y=Sys&sign=sign&t=1634542732001&q=%7B%7D
+    cy.contains("登录").click();
+});
