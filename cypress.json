@@ -1,1 +1,4 @@
-{}
+{
+    "baseUrl": "http://lhisdev.thalys.net.cn/os",
+    "viewportHeight": 900
+}
