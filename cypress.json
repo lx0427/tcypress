@@ -1,4 +1,7 @@
 {
     "baseUrl": "http://lhisdev.thalys.net.cn/os",
-    "viewportHeight": 900
+    "viewportHeight": 1200,
+    "env": {
+        "token": "729ead0a086747668706b331940c4337"
+    }
 }
