@@ -30,26 +30,32 @@
  * @param {*} password
  */
 Cypress.Commands.add("login", ({ username = "l1", password = "aini123456" } = {}) => {
-    let token = Cypress.env("token");
-    if (!token) {
-        cy.visit("/login");
-        cy.intercept("GET", "**/kaptchaCode*").as("kaptchaCode");
-        cy.get(".code-img").click();
-        cy.wait("@kaptchaCode").then((res) => {
-            let rep = JSON.parse(res.response.body);
-            cy.get('input[placeholder="验证码"]').clear().type(rep.data.kaptchaCode);
-        });
-        cy.get('input[placeholder="用户名"]').clear().type(username);
-        cy.get('input[placeholder="登录密码"]')
-            .clear()
-            .type(password + "{enter}");
-        // cy.contains("登录").click();
-
-        // 登录跳转到首页
-        cy.url().should("include", "/home");
-    } else {
-        cy.setCookie("Access-Token-lhis", token);
-    }
+    cy.fixture("token.json").then((data) => {
+        let { token, timestamp = 0 } = data;
+        let now = new Date().getTime();
+        if (!token || now >= timestamp + 86400000) {
+            cy.visit("/login");
+            cy.intercept("GET", "**/kaptchaCode*").as("kaptchaCode");
+            cy.get(".code-img").click();
+            cy.wait("@kaptchaCode").then((res) => {
+                let rep = JSON.parse(res.response.body);
+                cy.get('input[placeholder="验证码"]').clear().type(rep.data.kaptchaCode);
+            });
+            cy.get('input[placeholder="用户名"]').clear().type(username);
+            cy.get('input[placeholder="登录密码"]')
+                .clear()
+                .type(password + "{enter}");
+            cy.getCookie("Access-Token-lhis")
+                .should("exist")
+                .then((c) => {
+                    token = c.value;
+                    cy.writeFile("cypress/fixtures/token.json", { token, timestamp: now });
+                });
+        } else {
+            cy.setCookie("Access-Token-lhis", token);
+            cy.writeFile("cypress/fixtures/token.json", { token, timestamp: now });
+        }
+    });
 });
 
 /**
