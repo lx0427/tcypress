@@ -5,7 +5,7 @@ describe("careOrg visit", () => {
         cy.visit("/careOrg");
     });
 
-    it.only("careOrg search", () => {
+    it("careOrg search", () => {
         cy.url().should("include", "/careOrg");
         //  cy.get(".wrapper-query .ivu-card-extra .ivu-btn").should("have.length", 2);
     });
@@ -39,7 +39,9 @@ describe("careOrg visit", () => {
         cy.modalAction("新增机构信息", "确定").click();
     });
 
-    it("careOrg edit", () => {
-        cy.tableAction("更新记录", 1);
+    it.only("careOrg edit", () => {
+        cy.tableAction("更新记录", 3);
+        cy.contains("查看更多").click();
+        cy.get(".update-count").contains(13).scrollIntoView({ duration: 2000 });
     });
 });
