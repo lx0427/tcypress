@@ -55,7 +55,7 @@ Cypress.Commands.add("getFormItem", (name, type = "input") => {
  * @param {*} value
  * @param {*} type input,number,select
  */
-Cypress.Commands.add("setFormItem", ({ name, value, type }) => {
+Cypress.Commands.add("setFormItem", ({ name, value, type, delay }) => {
     if (["input", "number", "date"].includes(type)) {
         cy.getFormItem(name, type).type(value);
         if (type === "date") {
@@ -64,12 +64,13 @@ Cypress.Commands.add("setFormItem", ({ name, value, type }) => {
     } else if (type === "inputMap") {
         cy.getFormItem(name, type).click();
         cy.get(".ivu-list-container .ivu-list-item").first().click();
-        cy.wait(1000);
+        delay && cy.wait(delay);
         cy.modalAction("地图位置标记", "确定").click();
     } else if (type === "upload") {
         cy.formItemWrap(name).find("input[type='file']").attachFile(value);
     } else if (type === "select") {
         cy.getFormItem(name, type).click();
+        delay && cy.wait(delay);
         if (Array.isArray(value)) {
             value.forEach((v) => {
                 cy.formItemWrap(name).find(".ivu-select-item").eq(v).click({ force: true });

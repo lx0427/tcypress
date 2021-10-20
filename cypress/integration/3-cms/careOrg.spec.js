@@ -35,9 +35,9 @@ describe("careOrg visit", () => {
             { name: "医疗资质有效期", value: "2021-10-01 - 2021-11-31", type: "date" },
             { name: "有效开始日期", value: "2021-10-01", type: "date" },
             { name: "所属区县", value: 0, type: "select" },
-            { name: "所属街道", value: 0, type: "select" },
+            { name: "所属街道", value: 0, type: "select", delay: 100 },
             { name: "详细地址", value: "123", type: "input" },
-            { name: "地址坐标", value: "", type: "inputMap" },
+            { name: "地址坐标", value: "", type: "inputMap", delay: 800 },
             { name: "机构封面图片", value: "01.png", type: "upload" },
             { name: "资质证明材料（最多20张）", value: "01.png", type: "upload" },
         ];
@@ -47,7 +47,6 @@ describe("careOrg visit", () => {
 
     it("careOrg update record", () => {
         cy.tableAction("更新记录", 4);
-        cy.wait(500);
         cy.modalClose("更新记录");
         // cy.contains("查看更多").click();
         // cy.get(".update-count").contains("13").scrollIntoView({ duration: 2000 });
