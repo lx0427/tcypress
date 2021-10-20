@@ -24,6 +24,20 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+Cypress.Commands.overwrite("type", (originalFn, element, text, options) => {
+    if (options && options.sensitive) {
+        options.log = false;
+        // 创建自定义命令的日志
+        Cypress.log({
+            $el: element,
+            name: "type",
+            message: "*".repeat(text.length),
+        });
+    }
+
+    return originalFn(element, text, options);
+});
+
 /**
  * 登录
  * @param {*} username
@@ -46,7 +60,7 @@ Cypress.Commands.add("login", ({ username = Cypress.env("username"), password = 
             cy.get('input[placeholder="用户名"]').clear().type(username);
             cy.get('input[placeholder="登录密码"]')
                 .clear()
-                .type(password + "{enter}");
+                .type(password + "{enter}", { sensitive: true });
             cy.getCookie("Access-Token-lhis")
                 .should("exist")
                 .then((c) => {
