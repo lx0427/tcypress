@@ -103,5 +103,20 @@ Cypress.Commands.add("tableAction", (name, rowIndex = 0) => {
  * @param {*} rowIndex
  */
 Cypress.Commands.add("tableActionExtra", (name) => {
-    cy.get(".wrapper-content .ivu-card-extra .ivu-btn").contains(name).click();
+    return cy.get(".wrapper-content .ivu-card-extra .ivu-btn").contains(name).click();
+});
+
+/**
+ * modal
+ * @param {*} modalTitle
+ * @param {*} buttonName
+ */
+Cypress.Commands.add("modalWrap", (modalTitle, buttonName) => {
+    return cy.get(".ivu-modal-header-inner:visible").contains(modalTitle).closest(".ivu-modal-content");
+});
+Cypress.Commands.add("modalAction", (modalTitle, buttonName) => {
+    return cy.modalWrap(modalTitle).find(".ivu-modal-footer .ivu-btn").contains(buttonName);
+});
+Cypress.Commands.add("modalClose", (modalTitle) => {
+    return cy.modalWrap(modalTitle).find(".ivu-modal-close").click();
 });

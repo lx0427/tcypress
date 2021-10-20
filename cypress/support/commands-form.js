@@ -92,17 +92,3 @@ Cypress.Commands.add("setFormItems", (data) => {
         cy.setFormItem(item);
     });
 });
-
-/**
- * modal
- * @param {*} modalTitle
- * @param {*} buttonName
- */
-Cypress.Commands.add("modalAction", (modalTitle, buttonName) => {
-    return cy
-        .get(".ivu-modal-header-inner")
-        .contains(modalTitle)
-        .closest(".ivu-modal-content")
-        .find(".ivu-modal-footer .ivu-btn")
-        .contains(buttonName);
-});
