@@ -24,6 +24,11 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+// 全局不清理指定cookie
+// Cypress.Cookies.defaults({
+//     preserve: ["Access-Token-lhis"],
+// });
+
 Cypress.Commands.overwrite("type", (originalFn, element, text, options) => {
     if (options && options.sensitive) {
         options.log = false;
@@ -91,8 +96,10 @@ Cypress.Commands.add("tableAction", (name, rowIndex = 0) => {
         if (className.indexOf("ivu-dropdown") > -1) {
             cy.wrap($ele).trigger("mouseenter", { force: true });
             cy.get(".ivu-dropdown-item:visible").contains(name).click();
+            return false;
         } else if ($ele.innerHTML.trim() === name) {
             cy.wrap($ele).click({ force: true });
+            return false;
         }
     });
 });
