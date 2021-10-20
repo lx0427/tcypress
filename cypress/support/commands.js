@@ -46,7 +46,7 @@ Cypress.Commands.add("login", ({ username = Cypress.env("username"), password = 
             cy.get('input[placeholder="用户名"]').clear().type(username);
             cy.get('input[placeholder="登录密码"]')
                 .clear()
-                .type(password + "{enter}", { sensitive: true });
+                .type(password + "{enter}");
             cy.getCookie("Access-Token-lhis")
                 .should("exist")
                 .then((c) => {

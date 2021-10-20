@@ -40,10 +40,10 @@ describe("careOrg visit", () => {
 
     it.only("careOrg update record", () => {
         cy.tableAction("更新记录", 4);
-        cy.contains("查看更多").click();
-        cy.get(".update-count").contains("13").scrollIntoView({ duration: 2000 });
-        cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo("bottom", { duration: 2000 });
-        cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo(0, "50%", { duration: 2000 });
-        cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo(0, 200, { duration: 2000 }); // 纯数字等价于px
+        // cy.contains("查看更多").click();
+        // cy.get(".update-count").contains("13").scrollIntoView({ duration: 2000 });
+        // cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo("bottom", { duration: 2000 });
+        // cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo(0, "50%", { duration: 2000 });
+        // cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo(0, 200, { duration: 2000 }); // 纯数字等价于px
     });
 });
