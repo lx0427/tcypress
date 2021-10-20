@@ -5,12 +5,19 @@ describe("careOrg visit", () => {
         cy.visit("/careOrg");
     });
 
+    beforeEach(() => {
+        // Cypress 会在每次测试前自动清除所有 Cookie，以防止在测试用例之间共享状态
+        Cypress.Cookies.preserveOnce("Access-Token-lhis");
+    });
+
     it("careOrg search", () => {
-        cy.url().should("include", "/careOrg");
+        cy.tableAction("查看", 1);
+        cy.modalClose("查看机构信息");
+        // cy.url().should("include", "/careOrg");
         //  cy.get(".wrapper-query .ivu-card-extra .ivu-btn").should("have.length", 2);
     });
 
-    it("careOrg add", () => {
+    it.skip("careOrg add", () => {
         cy.tableActionExtra("新增");
         let data = [
             { name: "机构名称", value: genName(), type: "input" },
@@ -38,8 +45,10 @@ describe("careOrg visit", () => {
         cy.modalAction("新增机构信息", "确定").click();
     });
 
-    it.only("careOrg update record", () => {
+    it("careOrg update record", () => {
         cy.tableAction("更新记录", 4);
+        cy.wait(500);
+        cy.modalClose("更新记录");
         // cy.contains("查看更多").click();
         // cy.get(".update-count").contains("13").scrollIntoView({ duration: 2000 });
         // cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo("bottom", { duration: 2000 });
