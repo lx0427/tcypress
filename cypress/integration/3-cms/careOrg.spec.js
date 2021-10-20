@@ -12,7 +12,6 @@ describe("careOrg visit", () => {
 
     it("careOrg add", () => {
         cy.tableActionExtra("新增");
-        cy.wait(1000);
         let data = [
             { name: "机构名称", value: genName(), type: "input" },
             { name: "类型", value: 1, type: "select" },
@@ -40,7 +39,7 @@ describe("careOrg visit", () => {
     });
 
     it.only("careOrg update record", () => {
-        cy.tableAction("更新记录", 3);
+        cy.tableAction("更新记录", 4);
         cy.contains("查看更多").click();
         cy.get(".update-count").contains("13").scrollIntoView({ duration: 2000 });
         cy.get(".ivu-modal-body").contains("审核人").closest(".ivu-modal-body").scrollTo("bottom", { duration: 2000 });
