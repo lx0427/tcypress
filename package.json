@@ -1,16 +1,18 @@
 {
-  "name": "tcypress",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "cypress": "^8.6.0",
-    "cypress-file-upload": "^5.0.8"
-  }
+    "name": "tcypress",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "cypress open --env appEnv=dev",
+        "test": "cypress open --env appEnv=test",
+        "pre": "cypress open --env appEnv=pre"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "cypress": "^8.6.0",
+        "cypress-file-upload": "^5.0.8"
+    }
 }

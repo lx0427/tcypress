@@ -1,0 +1,7 @@
+{
+    "baseUrl": "http://lhistest.thalys.net.cn/os",
+    "env": {
+        "username": "lx",
+        "password": "aini123456"
+    }
+}

@@ -29,7 +29,7 @@
  * @param {*} username
  * @param {*} password
  */
-Cypress.Commands.add("login", ({ username = "l1", password = "aini123456" } = {}) => {
+Cypress.Commands.add("login", ({ username = Cypress.env("username"), password = Cypress.env("password") } = {}) => {
     cy.fixture("token.json").then((data) => {
         let { token, timestamp = 0 } = data;
         let now = new Date().getTime();
