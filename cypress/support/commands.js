@@ -79,3 +79,14 @@ Cypress.Commands.add("login", ({ username = Cypress.env("username"), password = 
         }
     });
 });
+
+/**
+ * 等待接口响应完成执行操作
+ * @param {*} api
+ * @param {*} trigger
+ */
+Cypress.Commands.add("api", ({ url, trigger }) => {
+    cy.intercept("GET", `**/${url}*`).as(url);
+    trigger && trigger();
+    return cy.wait("@" + url);
+});
