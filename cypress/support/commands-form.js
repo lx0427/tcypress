@@ -93,3 +93,24 @@ Cypress.Commands.add("setFormItems", (data) => {
         cy.setFormItem(item);
     });
 });
+
+/**
+ * 清空formItem
+ * @param {*} name 对应label完全匹配
+ * @param {*} value
+ * @param {*} type input,number,select
+ */
+Cypress.Commands.add("clearFormItem", ({ name, value, type }) => {
+    if (type === "select") {
+        if (Array.isArray(value)) {
+            cy.formItemWrap(name).within(() => {
+                cy.get(".ivu-icon.ivu-icon-ios-close").click({ multiple: true, force: true });
+            });
+        } else {
+            cy.formItemWrap(name).click();
+            cy.formItemWrap(name).find(".ivu-icon-ios-close-circle").click();
+        }
+    } else {
+        cy.getFormItem(name, type).clear();
+    }
+});

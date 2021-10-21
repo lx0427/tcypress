@@ -17,6 +17,9 @@
 import "cypress-file-upload";
 import "./commands";
 import "./commands-form";
+import "./commands-modal";
+import "./commands-search";
+import "./commands-table";
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
