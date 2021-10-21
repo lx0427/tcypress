@@ -63,15 +63,16 @@ Cypress.Commands.add("login", ({ username = Cypress.env("username"), password = 
                 cy.get('input[placeholder="验证码"]').clear().type(rep.data.kaptchaCode);
             });
             cy.get('input[placeholder="用户名"]').clear().type(username);
+            // 拦截登录
+            cy.intercept("POST", "**/login/login*").as("login");
             cy.get('input[placeholder="登录密码"]')
                 .clear()
                 .type(password + "{enter}", { log: false });
             // .type(password + "{enter}", { sensitive: true });
-            cy.getCookie("Access-Token-lhis")
-                .should("exist")
-                .then((c) => {
-                    cy.writeFile("cypress/fixtures/token.json", { token: c.value, timestamp: now });
-                });
+            cy.wait("@login").then((res) => {
+                let data = JSON.parse(res.response.body);
+                cy.writeFile("cypress/fixtures/token.json", { token: data.data.uid, timestamp: now });
+            });
         } else {
             cy.setCookie("Access-Token-lhis", token);
             cy.writeFile("cypress/fixtures/token.json", { token, timestamp: now });
