@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "serve": "cypress open --env appEnv=local",
         "dev": "cypress open --env appEnv=dev",
         "test": "cypress open --env appEnv=test",
         "pre": "cypress open --env appEnv=pre"
