@@ -28,7 +28,7 @@ Cypress.Commands.add("formItemWrap", (name) => {
  * 获取表单formItem
  * @param {*} name 对应label完全匹配
  * @param {*} value
- * @param {*} type input,number,select
+ * @param {*} type number,select,upload,input,date,inputMap
  */
 Cypress.Commands.add("getFormItem", (name, type = "input") => {
     let selector = "";
@@ -53,32 +53,40 @@ Cypress.Commands.add("getFormItem", (name, type = "input") => {
  * 设置单个表单项值
  * @param {*} name 对应label完全匹配
  * @param {*} value
- * @param {*} type input,number,select
+ * @param {*} type inputMap,select,upload,input,number,date
  */
-Cypress.Commands.add("setFormItem", ({ name, value, type, delay }) => {
-    if (["input", "number", "date"].includes(type)) {
-        cy.getFormItem(name, type).type(value);
-        if (type === "date") {
-            cy.formItemWrap(name).find(".ivu-form-item-label").click();
-        }
-    } else if (type === "inputMap") {
-        cy.getFormItem(name, type).click();
-        cy.get(".ivu-list-container .ivu-list-item").first().click();
-        delay && cy.wait(delay);
-        cy.modalAction("地图位置标记", "确定").click();
-    } else if (type === "upload") {
-        cy.formItemWrap(name).find("input[type='file']").attachFile(value);
-    } else if (type === "select") {
-        cy.getFormItem(name, type).click();
-        delay && cy.wait(delay);
-        if (Array.isArray(value)) {
-            value.forEach((v) => {
-                cy.formItemWrap(name).find(".ivu-select-item").eq(v).click({ force: true });
-            });
+Cypress.Commands.add("setFormItem", ({ name, value, type, load, clear = false }) => {
+    clear && cy.clearFormItem({ name, value, type });
+
+    switch (type) {
+        case "inputMap":
             cy.getFormItem(name, type).click();
-        } else {
-            cy.formItemWrap(name).find(".ivu-select-item").eq(value).click({ force: true });
-        }
+            cy.get(".ivu-list-container .ivu-list-item").first().click();
+            load && cy.wait(load); // 加载地图
+            cy.modalAction("地图位置标记", "确定").click();
+            break;
+        case "upload":
+            cy.formItemWrap(name).find("input[type='file']").attachFile(value);
+            load && cy.wait(load); // 上传文件
+            break;
+        case "select":
+            cy.getFormItem(name, type).click();
+            load && cy.wait(load); // 请求数据
+            if (Array.isArray(value)) {
+                value.forEach((v) => {
+                    cy.formItemWrap(name).find(".ivu-select-item").eq(v).click({ force: true });
+                });
+                cy.getFormItem(name, type).click();
+            } else {
+                cy.formItemWrap(name).find(".ivu-select-item").eq(value).click({ force: true });
+            }
+            break;
+        default:
+            cy.getFormItem(name, type).type(value);
+            if (type === "date") {
+                cy.formItemWrap(name).find(".ivu-form-item-label").click();
+            }
+            break;
     }
 });
 
@@ -97,7 +105,7 @@ Cypress.Commands.add("setFormItems", (data) => {
 /**
  * 清空formItem
  * @param {*} name 对应label完全匹配
- * @param {*} value
+ * @param {*} value (! 多选数组清空必须传入数组)
  * @param {*} type input,number,select
  */
 Cypress.Commands.add("clearFormItem", ({ name, value, type }) => {
