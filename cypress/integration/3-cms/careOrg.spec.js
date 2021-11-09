@@ -18,9 +18,9 @@ describe("careOrg visit", () => {
         { name: "医疗资质有效期", value: "2021-10-01 - 2021-11-31", type: "date" },
         { name: "有效开始日期", value: "2021-10-01", type: "date" },
         { name: "所属区县", value: 0, type: "select" },
-        { name: "所属街道", value: 0, type: "select", delay: 100 },
+        { name: "所属街道", value: 0, type: "select", load: 100 },
         { name: "详细地址", value: "123", type: "input" },
-        { name: "地址坐标", value: "", type: "inputMap", delay: 800 },
+        { name: "地址坐标", value: "", type: "inputMap", load: 800 },
         { name: "机构封面图片", value: "01.png", type: "upload" },
         { name: "资质证明材料（最多20张）", value: "01.png", type: "upload" },
     ];
@@ -67,52 +67,85 @@ describe("careOrg visit", () => {
     });
     it("begin", () => {});
 
-    // 第一个用例不能跳过，否则会报错
-    it.skip("add", () => {
-        cy.tableActionExtra("新增");
-        cy.setFormItems(formAdd);
-        cy.modalAction("新增机构信息", "确定").click();
-    });
+    describe("护理方式编辑", () => {
+        beforeEach(() => {
+            cy.wait(1000);
 
-    it("edit: add multiple select", () => {
-        cy.wait(1000);
-        cy.editFormConfirmAndAudit({
-            change() {
-                cy.setFormItem({ name: "机构运营模式", value: [0, 1], type: "select" });
-            },
-            assert() {
-                cy.get(".tInfo_item-content").invoke("html").should("include", "医养结合,公建民营");
-            },
+            cy.editFormConfirmAndAudit({
+                change() {
+                    cy.setFormItems([
+                        { name: "机构护理方式", value: [0, 1], type: "select", clear: true },
+                        { name: "家医巡诊资质有效期", value: "2021-10-01 - 2021-11-31", type: "date" },
+                        { name: "核定床位数量", value: 123, type: "number" },
+                        { name: "计划长护险床位数", value: 123, type: "number" },
+                        { name: "床位证明材料", value: "01.png", type: "upload", load: 100 },
+                    ]);
+                },
+            });
+        });
+        it("居家护理方式清理，关联字段处理", () => {
+            cy.editFormConfirmAndAudit({
+                change() {
+                    cy.setFormItem({ name: "机构护理方式", value: [0], type: "select" });
+                },
+                assert() {
+                    // cy.get(".tInfo_list").invoke("html").snapshot();
+                    cy.get(".tInfo_item-content").invoke("html").should("not.include", "居家护理");
+                    cy.get(".tInfo_list").invoke("html").should("include", "家医巡诊资质有效期");
+                },
+            });
+        });
+        it.only("机构护理方式清理，关联字段处理", () => {
+            cy.wait(1000);
+            cy.editFormConfirmAndAudit({
+                change() {
+                    cy.setFormItem({ name: "机构护理方式", value: [1], type: "select" });
+                },
+                assert() {
+                    cy.get(".tInfo_list .tInfo_item-title:visible").should("have.length", 4);
+                    cy.get(".tInfo_item-content").invoke("html").should("not.include", "机构护理");
+                    cy.get(".tInfo_list").invoke("html").should("include", "核定床位数量");
+                    cy.get(".tInfo_list").invoke("html").should("include", "床位证明材料");
+                    cy.get(".tInfo_list").invoke("html").should("include", "计划长护险床位数");
+                },
+            });
         });
     });
 
-    it("edit: clear multiple select", () => {
-        cy.editFormConfirmAndAudit({
-            change() {
-                cy.clearFormItem({ name: "机构运营模式", value: [], type: "select" });
-            },
-            assert() {
-                cy.get(".tInfo_item-content")
-                    .invoke("html")
-                    .should("not.include", "医养结合")
-                    .and("not.include", "公建民营");
-            },
+    describe("新增", () => {
+        // 第一个用例不能跳过，否则会报错
+        it("add", () => {
+            cy.tableActionExtra("新增");
+            cy.setFormItems(formAdd);
+            cy.modalAction("新增机构信息", "确定").click();
         });
     });
 
-    it("edit: set isMedicalPoint", () => {
-        cy.editFormConfirmAndAudit({
-            change() {
-                cy.setFormItem({ name: "是否医疗定点机构", value: 0, type: "select" });
-            },
+    describe("机构运营模式编辑", () => {
+        it("edit: add multiple select", () => {
+            cy.wait(1000);
+            cy.editFormConfirmAndAudit({
+                change() {
+                    cy.setFormItem({ name: "机构运营模式", value: [0, 1], type: "select" });
+                },
+                assert() {
+                    cy.get(".tInfo_item-content").invoke("html").should("include", "医养结合,公建民营");
+                },
+            });
         });
-    });
 
-    it("edit: clear isMedicalPoint", () => {
-        cy.editFormConfirmAndAudit({
-            change() {
-                cy.clearFormItem({ name: "是否医疗定点机构", value: "", type: "select" });
-            },
+        it("edit: clear multiple select", () => {
+            cy.editFormConfirmAndAudit({
+                change() {
+                    cy.clearFormItem({ name: "机构运营模式", value: [], type: "select" });
+                },
+                assert() {
+                    cy.get(".tInfo_item-content")
+                        .invoke("html")
+                        .should("not.include", "医养结合")
+                        .and("not.include", "公建民营");
+                },
+            });
         });
     });
 
